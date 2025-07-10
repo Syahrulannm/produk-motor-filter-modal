@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Produk Motor - Live Search & Modal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      .card {
+        transition: all 0.3s ease;
+      }
+      .card:hover {
+        transform: scale(1.02);
+      }
+    </style>
+    <script defer>
+      const dataMotor = [
+        {
+          nama: "Yamaha NMAX",
+          harga: "Rp32.000.000",
+          warna: "bg-blue-100",
+          gambar: "https://source.unsplash.com/300x200/?yamaha,nmax",
+        },
+        {
+          nama: "Honda Beat",
+          harga: "Rp18.000.000",
+          warna: "bg-green-100",
+          gambar: "https://source.unsplash.com/300x200/?honda,beat",
+        },
+        {
+          nama: "CFMoto MT450",
+          harga: "Rp159.800.000",
+          warna: "bg-red-100",
+          gambar: "https://source.unsplash.com/300x200/?motorbike,mt450",
+        },
+      ];
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const kontainer = document.getElementById("daftarMotor");
+        const input = document.getElementById("cariInput");
+
+        function tampilkanData(data) {
+          kontainer.innerHTML = "";
+          data.forEach((motor) => {
+            const div = document.createElement("div");
+            div.className = `card ${motor.warna} rounded-xl shadow overflow-hidden transition relative`;
+
+            div.innerHTML = `
+            <div class="text-right p-2">
+              <button onclick="this.closest('.card').remove()" class="text-red-500 hover:text-red-700 text-sm">❌ Hapus</button>
+            </div>
+            <img src="${motor.gambar}" alt="${motor.nama}" class="w-full h-48 object-cover" />
+            <div class="p-4 pt-2">
+              <h3 class="text-xl font-bold text-gray-800">${motor.nama}</h3>
+              <p class="text-gray-600 mb-3">Harga: ${motor.harga}</p>
+              <a href="https://wa.me/6281234567890?text=Halo,%20saya%20tertarik%20dengan%20${encodeURIComponent(motor.nama)}"
+                class="inline-block bg-green-600 text-white text-sm px-4 py-2 rounded hover:bg-green-700 transition" target="_blank">
+                Beli via WhatsApp
+              </a>
+              <button onclick="lihatDetail('${motor.nama}', '${motor.harga}', '${motor.gambar}')" class="block mt-3 text-sm text-blue-600 hover:underline">Lihat Detail</button>
+            </div>
+          `;
+            kontainer.appendChild(div);
+          });
+        }
+
+        input.addEventListener("input", () => {
+          const keyword = input.value.toLowerCase();
+          const hasil = dataMotor.filter((motor) => motor.nama.toLowerCase().includes(keyword));
+          tampilkanData(hasil);
+        });
+
+        tampilkanData(dataMotor); // tampil awal
+      });
+
+      function lihatDetail(nama, harga, gambar) {
+        document.getElementById("modalNama").innerText = nama;
+        document.getElementById("modalHarga").innerText = harga;
+        document.getElementById("modalGambar").src = gambar;
+        document.getElementById("modal").classList.remove("hidden");
+        document.getElementById("modal").classList.add("flex");
+      }
+
+      function tutupModal() {
+        document.getElementById("modal").classList.remove("flex");
+        document.getElementById("modal").classList.add("hidden");
+      }
+    </script>
+  </head>
+  <body class="bg-gray-100 min-h-screen p-6">
+    <h2 class="text-2xl font-bold text-center mb-4 text-gray-800">🔍 Cari Motor</h2>
+    <div class="max-w-md mx-auto mb-6">
+      <input id="cariInput" type="text" placeholder="Ketik nama motor..." class="w-full px-4 py-2 rounded border border-gray-300 focus:ring-2 focus:ring-orange-500 focus:outline-none" />
+    </div>
+    <div id="daftarMotor" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 max-w-6xl mx-auto"></div>
+
+    <!-- Modal Detail -->
+    <div id="modal" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50">
+      <div class="bg-white p-6 rounded-lg max-w-sm w-full shadow-lg relative text-left">
+        <button onclick="tutupModal()" class="absolute top-2 right-2 text-red-500 hover:text-red-700 text-xl">×</button>
+        <img id="modalGambar" src="" alt="" class="w-full h-40 object-cover mb-4 rounded" />
+        <h3 id="modalNama" class="text-xl font-bold mb-2 text-gray-800"></h3>
+        <p id="modalHarga" class="text-gray-600"></p>
+      </div>
+    </div>
+  </body>
+</html>
